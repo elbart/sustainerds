@@ -5,12 +5,16 @@ verify_ssl = true
 
 [dev-packages]
 pytest = "*"
+mypy = "*"
+waitress = "*"
+watchdog = "*"
+httpie = "*"
 
 [packages]
-sustainerds-api = {editable = true,path = "."}
 falcon = "*"
 falcon-apispec = "*"
 falcon-marshmallow = "*"
+sustainerds-api = {editable = true,path = "."}
 
 [requires]
 python_version = "3.7"

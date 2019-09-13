@@ -3,6 +3,8 @@ from apispec.ext.marshmallow import MarshmallowPlugin
 import falcon
 from falcon_apispec import FalconPlugin
 from marshmallow import Schema, fields
+from sustainerds.api.core.routes import add_routes
+import sustainerds.api.entities.user as user
 
 
 # Optional marshmallow support
@@ -28,7 +30,7 @@ class RandomPetResource:
                 description: A pet to be returned
                 schema: PetSchema
         """
-        pet = get_random_pet()  # returns JSON
+        pet = '{}'  # returns JSON
         resp.media = pet
 
 # create instance of resource
@@ -36,6 +38,7 @@ random_pet_resource = RandomPetResource()
 # pass into `add_route` for Falcon
 app.add_route("/random", random_pet_resource)
 
+add_routes(app, user)
 
 # Create an APISpec
 spec = APISpec(
@@ -53,4 +56,5 @@ spec.components.schema('Category', schema=CategorySchema)
 spec.components.schema('Pet', schema=PetSchema)
 # pass created resource into `path` for APISpec
 spec.path(resource=random_pet_resource)
-print(spec.to_yaml())
+# app.add_route("/__api__", OpenApiResource())
+# print(spec.to_yaml())
