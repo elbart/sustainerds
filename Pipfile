@@ -4,7 +4,7 @@ url = "https://pypi.org/simple"
 verify_ssl = true
 
 [dev-packages]
-pytest = "*"
+pytest = "==5.0.1" # https://github.com/microsoft/vscode-python/issues/6990
 mypy = "*"
 waitress = "*"
 watchdog = "*"
