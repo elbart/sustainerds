@@ -1,3 +1,5 @@
+import uuid
+
 from falcon import Request, Response
 from marshmallow import fields
 from marshmallow.schema import Schema
@@ -9,18 +11,18 @@ from sustainerds.api.core.resource import (
     SchemaSpec,
     SustainerdsResource,
 )
-from sustainerds.api.entities.user.schemas import UserResponseSchema
 
 
 class UserGetRequestSchema(RequestSchemaSpec):
     class Query(Schema):
-        search = fields.Str(required=True)
-
-    query = Query
+        search = fields.Str()
 
 
 class UserGetResponseSchema(ResponseSchemaSpec):
-    json = UserResponseSchema
+    class Json(Schema):
+        id = fields.UUID(missing=uuid.uuid4)
+        email = fields.Email()
+        password = fields.Str()
 
 
 class UserResource(SustainerdsResource):
@@ -38,8 +40,5 @@ class UserResource(SustainerdsResource):
     def on_get(self, req: Request, resp: Response):
         """Get a user by user_id"""
         user = {"email": "tim@elbart.com", "password": "bla123"}
-
-        schema = UserResponseSchema()
-        schema.load(user)
 
         resp.media = user

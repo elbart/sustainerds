@@ -13,7 +13,8 @@ develop:
 mypy:
 	pipenv run mypy \
 		--package sustainerds \
-		--ignore-missing-imports
+		--ignore-missing-imports \
+		--show-traceback
 
 .PHONY: test
 test: mypy

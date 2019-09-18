@@ -19,16 +19,15 @@ def create_app(sqla_session=None) -> falcon.API:
     """
     # Create Falcon web app
     app = falcon.API(middleware=[SchemaValidatorComponent()])
-
     return app
 
 
 def create_openapi_spec(app: falcon.API) -> APISpec:
-    # Create an APISpec
+    """Creates an OpenAPI Spec for the Sustainerds API"""
     spec = APISpec(
-        title="Swagger Petstore",
+        title="Sustainerds API",
         version="1.0.0",
-        openapi_version="3.0",
+        openapi_version="3.0.0",
         plugins=[MarshmallowPlugin()],
     )
     return spec
@@ -38,11 +37,12 @@ def configure_app(app: falcon.API, spec: APISpec):
     add_routes(app, spec, user)
 
 
-def get_app():
+def get_app() -> falcon.API:
     """The actual wsgi application factory which is stitching all the
     required things together"""
     app = create_app()
     spec = create_openapi_spec(app)
     configure_app(app, spec)
+    print(spec.to_yaml())
 
     return app

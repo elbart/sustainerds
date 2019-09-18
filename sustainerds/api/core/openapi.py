@@ -1,4 +1,4 @@
-from typing import Text
+from typing import Dict, Text
 
 from apispec import APISpec
 
@@ -6,6 +6,50 @@ from sustainerds.api.core.resource import SustainerdsResource
 
 
 def add_openapi_specs(o: APISpec, path: str, resource: SustainerdsResource, name: Text):
-    o.path(path=path, operations={})
+    """Add the resources specifcations to the api sepc object"""
 
-    # openapi_spec.components.schema(r.name, schema=)
+    operations: Dict = dict()
+
+    methods = resource.resource_schema_spec.get_methods()
+
+    for method, spec in methods:
+        method_name = method.title()
+
+        if spec.request:
+            if spec.request.json:
+                schema_name = f"{name}{method_name}{type(spec.response).__name__}"
+                o.components.schema(schema_name, schema=spec.request.json)
+
+                operations[method.lower()] = dict(
+                    summary="", requestBody=f"#/components/schemas/{schema_name}"
+                )
+
+            # TODO: get it to work. Currently I get this error.
+            # ValueError: [{'in': 'query', 'schema': <Query(many=False)>}] doesn't have either `fields` or `_declared_fields`.
+            # if spec.request.query:
+            #     oa = OpenAPIConverter('3.0.0', lambda x: x, o)
+            #     operations['parameters'] = oa.schema2parameters([
+            #         {"in": "query", "schema": spec.request.query()}
+            #     ])
+
+        if spec.response and spec.response.json:
+            schema_name = f"{name}{method_name}{type(spec.response).__name__}"
+            o.components.schema(schema_name, schema=spec.response.json())
+
+            operations.setdefault(method.lower(), dict())
+            operations[method.lower()] = {
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": f"#/components/schemas/{schema_name}"
+                                }
+                            }
+                        },
+                    }
+                }
+            }
+
+    o.path(path=path, operations=operations)
