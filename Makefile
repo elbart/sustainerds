@@ -5,16 +5,32 @@ build:
 .PHONY: develop
 develop:
 	pipenv run watchmedo auto-restart \
-	--patterns="*.py" \
-	--recursive \
-	waitress-serve -- --port 8000 --call 'sustainerds.api.app:get_app'
+		--patterns="*.py" \
+		--recursive \
+		waitress-serve -- --port 8000 --call 'sustainerds.api.app:get_app'
 
 .PHONY: mypy
 mypy:
 	pipenv run mypy \
-	--package sustainerds \
-	--ignore-missing-imports
+		--package sustainerds \
+		--ignore-missing-imports
 
 .PHONY: test
 test: mypy
 	pipenv run pytest
+
+.PHONY: fmt
+fmt: mypy test
+	# remove unused imports
+	pipenv run autoflake \
+		--remove-all-unused-imports \
+		--in-place \
+		--recursive sustainerds/
+
+	# organize imports
+	pipenv run importanize sustainerds/
+	
+	# reformat code
+	pipenv run black \
+		--target-version py37 \
+		sustainerds/

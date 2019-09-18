@@ -7,7 +7,8 @@ from marshmallow.schema import Schema
 
 @dataclass
 class RequestSchemaSpec:
-    '''Schema definition wrapper to cover all different locations to check for input data on the request'''
+    """Schema definition wrapper to cover all different locations to check for input data on the request"""
+
     query: Optional[Type[Schema]] = None
     json: Optional[Type[Schema]] = None
     headers: Optional[Type[Schema]] = None
@@ -17,7 +18,8 @@ class RequestSchemaSpec:
 
 @dataclass
 class ResponseSchemaSpec:
-    '''Schema definition wrapper to cover all different locations to check for output data on the response'''
+    """Schema definition wrapper to cover all different locations to check for output data on the response"""
+
     json: Optional[Type[Schema]] = None
     headers: Optional[Type[Schema]] = None
 
@@ -49,10 +51,8 @@ class SustainerdsResource:
         pass
 
 
-
-
 def validate_request(req: falcon.Request, spec: RequestSchemaSpec):
-    '''Validates a request schema specification against the falcon.Request'''
+    """Validates a request schema specification against the falcon.Request"""
     if spec.query:
         s = spec.query()
         s.load(req.params)
@@ -71,7 +71,7 @@ def validate_request(req: falcon.Request, spec: RequestSchemaSpec):
 
 
 def validate_response(resp: falcon.Response, spec: ResponseSchemaSpec):
-    '''Validates a response schema specification against the falcon.Response'''
+    """Validates a response schema specification against the falcon.Response"""
     if spec.json:
         s = spec.json()
         s.load(resp.media)
@@ -80,7 +80,7 @@ def validate_response(resp: falcon.Response, spec: ResponseSchemaSpec):
         s = spec.headers()
         s.load(resp.headers)
 
-    
+
 def validate_schema():
     def wrap(fn):
         def wrapped_f(cls, req: falcon.Request, resp: falcon.Response, *args):
@@ -100,4 +100,5 @@ def validate_schema():
                 return res
 
         return wrapped_f
+
     return wrap

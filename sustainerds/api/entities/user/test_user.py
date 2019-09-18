@@ -1,12 +1,13 @@
-from falcon import testing
 import pytest
+from falcon import testing
 
-import sustainerds.api.app as sustainerds_app
+from sustainerds.api import app as sustainerds_app
 
 
 # Depending on your testing strategy and how your application
 # manages state, you may be able to broaden the fixture scope
 # beyond the default 'function' scope used in this example.
+
 
 @pytest.fixture()
 def client():
@@ -16,10 +17,7 @@ def client():
 
 
 def test_get_message(client):
-    doc = {
-            "email": "tim@elbart.com",
-            "password": "bla123",
-        }
+    doc = {"email": "tim@elbart.com", "password": "bla123"}
 
-    result = client.simulate_get('/user')
+    result = client.simulate_get("/user")
     assert result.json == doc

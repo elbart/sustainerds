@@ -1,5 +1,7 @@
-from marshmallow import Schema, fields
 import uuid
+
+from marshmallow import Schema, fields
+
 
 class UserResponseSchema(Schema):
     id = fields.UUID(missing=uuid.uuid4)

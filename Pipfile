@@ -12,6 +12,8 @@ httpie = "*"
 pylint = "*"
 jupyter = "*"
 black = "*"
+importanize = "*"
+autoflake = "*"
 
 [packages]
 falcon = "*"
