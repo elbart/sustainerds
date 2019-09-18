@@ -1,10 +1,11 @@
 from dataclasses import dataclass
 from types import ModuleType
-from typing import Dict, Optional, Type
+from typing import Dict, Optional, Text, Type
 
 import falcon
 from apispec import APISpec
 
+from sustainerds.api.core.openapi import add_openapi_specs
 from sustainerds.api.core.resource import SustainerdsResource
 
 
@@ -14,11 +15,12 @@ class SustainerdsRoute:
 
     path: str
     resource: Type[SustainerdsResource]
+    name: Text
     kwargs: Optional[Dict] = None
 
 
 def add_routes(
-    app: falcon.API, spec: APISpec, mod: ModuleType, fname: Optional[str] = None
+    app: falcon.API, openapi_spec: APISpec, mod: ModuleType, fname: Optional[str] = None
 ):
     """
     Looks up the `include_routes` callable within the
@@ -33,10 +35,11 @@ def add_routes(
                 raise ValueError(
                     f"Object {r} required to be of type SustainerdsRoute, but was {type(r)}. Imported from module {mod}"
                 )
-            resource = r.resource(app)
+            resource: SustainerdsResource = r.resource(app, r.name)
+            # resource.resource_schema_spec
 
             if not r.kwargs:
                 r.kwargs = {}
 
             app.add_route(r.path, resource, **r.kwargs)
-            spec.path(resource=resource)
+            add_openapi_specs(openapi_spec, r.path, resource, r.name)

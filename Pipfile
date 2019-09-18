@@ -14,6 +14,7 @@ jupyter = "*"
 black = "*"
 importanize = "*"
 autoflake = "*"
+ipython = "*"
 
 [packages]
 falcon = "*"

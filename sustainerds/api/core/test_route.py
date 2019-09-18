@@ -22,11 +22,11 @@ def include_routes_bad(app):
     return [SustainerdsRoute("/user", SustainerdsResource, {}), dict(aaa=123)]
 
 
-def test_add_routes(test_app: falcon.API, test_spec: APISpec):
-    add_routes(test_app, test_spec, this_mod, "include_routes_good")
-    add_routes(test_app, test_spec, this_mod, "include_routes_empty")
+def test_add_routes(test_app: falcon.API, plain_openapi_spec: APISpec):
+    add_routes(test_app, plain_openapi_spec, this_mod, "include_routes_good")
+    add_routes(test_app, plain_openapi_spec, this_mod, "include_routes_empty")
 
     with raises(ValueError):
-        add_routes(test_app, test_spec, this_mod, "include_routes_bad")
+        add_routes(test_app, plain_openapi_spec, this_mod, "include_routes_bad")
 
-    assert len(test_spec._paths) == 2
+    assert len(plain_openapi_spec._paths) == 2

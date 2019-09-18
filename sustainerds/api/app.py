@@ -1,39 +1,16 @@
 import falcon
 from apispec import APISpec
 from apispec.ext.marshmallow import MarshmallowPlugin
-from falcon_apispec import FalconPlugin
-from marshmallow import Schema, fields
 
+from sustainerds.api.core.resource import SchemaValidatorComponent
 from sustainerds.api.core.route import add_routes
 from sustainerds.api.entities import user
 
 
-# Optional marshmallow support
-class CategorySchema(Schema):
-    id = fields.Int()
-    name = fields.Str(required=True)
+# from falcon_apispec import FalconPlugin
 
 
-class PetSchema(Schema):
-    category = fields.Nested(CategorySchema, many=True)
-    name = fields.Str()
-
-
-class RandomPetResource:
-    def on_get(self, req, resp):
-        """A cute furry animal endpoint.
-        ---
-        description: Get a random pet
-        responses:
-            200:
-                description: A pet to be returned
-                schema: PetSchema
-        """
-        pet = "{}"  # returns JSON
-        resp.media = pet
-
-
-def create(sqla_session=None):
+def create_app(sqla_session=None) -> falcon.API:
     """Creates the falcon app and takes the respective arguments we need:
     - database
     - filesystem
@@ -41,29 +18,31 @@ def create(sqla_session=None):
     - etc.
     """
     # Create Falcon web app
-    app = falcon.API()
-    # create instance of resource
-    random_pet_resource = RandomPetResource()
-    # pass into `add_route` for Falcon
-    app.add_route("/random", random_pet_resource)
+    app = falcon.API(middleware=[SchemaValidatorComponent()])
 
+    return app
+
+
+def create_openapi_spec(app: falcon.API) -> APISpec:
     # Create an APISpec
     spec = APISpec(
         title="Swagger Petstore",
         version="1.0.0",
-        openapi_version="2.0",
-        plugins=[FalconPlugin(app), MarshmallowPlugin()],
+        openapi_version="3.0",
+        plugins=[MarshmallowPlugin()],
     )
+    return spec
 
+
+def configure_app(app: falcon.API, spec: APISpec):
     add_routes(app, spec, user)
-
-    # Register entities and paths
-    spec.components.schema("Category", schema=CategorySchema)
-    spec.components.schema("Pet", schema=PetSchema)
-    return app
 
 
 def get_app():
     """The actual wsgi application factory which is stitching all the
     required things together"""
-    return create()
+    app = create_app()
+    spec = create_openapi_spec(app)
+    configure_app(app, spec)
+
+    return app

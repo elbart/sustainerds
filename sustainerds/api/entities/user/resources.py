@@ -8,7 +8,6 @@ from sustainerds.api.core.resource import (
     ResponseSchemaSpec,
     SchemaSpec,
     SustainerdsResource,
-    validate_schema,
 )
 from sustainerds.api.entities.user.schemas import UserResponseSchema
 
@@ -25,21 +24,19 @@ class UserGetResponseSchema(ResponseSchemaSpec):
 
 
 class UserResource(SustainerdsResource):
+    """User collection resource"""
 
-    schema_spec = ResourceSchemaSpec(
-        GET=SchemaSpec(request=UserGetRequestSchema(), response=UserGetResponseSchema())
-    )
+    @property
+    def resource_schema_spec(self) -> ResourceSchemaSpec:
+        return ResourceSchemaSpec(
+            name="UserCollection",
+            GET=SchemaSpec(
+                request=UserGetRequestSchema(), response=UserGetResponseSchema()
+            ),
+        )
 
-    @validate_schema()
     def on_get(self, req: Request, resp: Response):
-        """Get a user by user_id
-        ---
-        description: Get a Sustainerds User by Id
-        responses:
-            200:
-                description: A Sustainerds User to be returned
-                schema: UserResponseSchema
-        """
+        """Get a user by user_id"""
         user = {"email": "tim@elbart.com", "password": "bla123"}
 
         schema = UserResponseSchema()
