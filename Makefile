@@ -7,7 +7,7 @@ develop:
 	pipenv run watchmedo auto-restart \
 	--patterns="*.py" \
 	--recursive \
-	waitress-serve -- --port 8000 sustainerds.api.app:app
+	waitress-serve -- --port 8000 --call 'sustainerds.api.app:get_app'
 
 .PHONY: mypy
 mypy:

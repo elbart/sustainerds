@@ -1,6 +1,7 @@
-from sustainerds.api.core.routes import SustainerdsRoute
-from sustainerds.api.entities.user.resources import S12nUserResource
+from sustainerds.api.core.route import SustainerdsRoute
+from sustainerds.api.entities.user.resources import UserResource
+
 def include_routes(app):
     return [
-        SustainerdsRoute("/user", S12nUserResource(), {})
+        SustainerdsRoute("/user", UserResource)
     ]
