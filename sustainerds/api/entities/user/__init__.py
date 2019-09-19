@@ -1,6 +1,6 @@
 from sustainerds.api.core.route import SustainerdsRoute
-from sustainerds.api.entities.user.resources import UserResource
+from sustainerds.api.entities.user.resources import UserCollectionResource
 
 
 def include_routes(app):
-    return [SustainerdsRoute("/user", UserResource, "UserCollection")]
+    return [SustainerdsRoute("/user", UserCollectionResource, "UserCollection")]

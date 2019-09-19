@@ -89,7 +89,7 @@ class ResourceSchemaSpec:
         ]
 
 
-class SustainerdsResource:
+class BaseResource:
     """Base resource, which is used in the Sustainerds application"""
 
     @property
@@ -162,7 +162,7 @@ class SchemaValidatorComponent:
         self,
         req: falcon.Request,
         resp: falcon.Response,
-        resource: SustainerdsResource,
+        resource: BaseResource,
         params: Dict,
     ):
         try:
@@ -176,7 +176,7 @@ class SchemaValidatorComponent:
         self,
         req: falcon.Request,
         resp: falcon.Response,
-        resource: SustainerdsResource,
+        resource: BaseResource,
         params: Dict,
     ):
         try:

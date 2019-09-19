@@ -2,10 +2,10 @@ from typing import Dict, Text
 
 from apispec import APISpec
 
-from sustainerds.api.core.resource import SustainerdsResource
+from sustainerds.api.core.resource import BaseResource
 
 
-def add_openapi_specs(o: APISpec, path: str, resource: SustainerdsResource, name: Text):
+def add_openapi_specs(o: APISpec, path: str, resource: BaseResource, name: Text):
     """Add the resources specifcations to the api sepc object"""
 
     operations: Dict = dict()

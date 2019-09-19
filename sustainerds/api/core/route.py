@@ -6,7 +6,7 @@ import falcon
 from apispec import APISpec
 
 from sustainerds.api.core.openapi import add_openapi_specs
-from sustainerds.api.core.resource import SustainerdsResource
+from sustainerds.api.core.resource import BaseResource
 
 
 @dataclass
@@ -14,7 +14,7 @@ class SustainerdsRoute:
     """ Represents a route which we can define and return in our entities """
 
     path: str
-    resource: Type[SustainerdsResource]
+    resource: Type[BaseResource]
     name: Text
     kwargs: Optional[Dict] = None
 
@@ -35,7 +35,7 @@ def add_routes(
                 raise ValueError(
                     f"Object {r} required to be of type SustainerdsRoute, but was {type(r)}. Imported from module {mod}"
                 )
-            resource: SustainerdsResource = r.resource(app, r.name)
+            resource: BaseResource = r.resource(app, r.name)
             # resource.resource_schema_spec
 
             if not r.kwargs:

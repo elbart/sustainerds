@@ -5,11 +5,11 @@ from marshmallow import fields
 from marshmallow.schema import Schema
 
 from sustainerds.api.core.resource import (
+    BaseResource,
     RequestSchemaSpec,
     ResourceSchemaSpec,
     ResponseSchemaSpec,
     SchemaSpec,
-    SustainerdsResource,
 )
 
 
@@ -25,7 +25,7 @@ class UserGetResponseSchema(ResponseSchemaSpec):
         password = fields.Str()
 
 
-class UserResource(SustainerdsResource):
+class UserCollectionResource(BaseResource):
     """User collection resource"""
 
     @property
