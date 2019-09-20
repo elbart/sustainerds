@@ -42,4 +42,4 @@ def add_routes(
                 r.kwargs = {}
 
             app.add_route(r.path, resource, **r.kwargs)
-            add_openapi_specs(openapi_spec, r.path, resource, r.name)
+            add_openapi_specs(openapi_spec, r.path, resource)
