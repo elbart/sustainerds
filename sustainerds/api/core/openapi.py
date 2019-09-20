@@ -1,4 +1,4 @@
-from typing import Dict, Text, Type
+from typing import Dict
 
 from apispec import APISpec
 
