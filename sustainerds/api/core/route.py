@@ -6,7 +6,7 @@ import falcon
 from apispec import APISpec
 
 from sustainerds.api.core.openapi import add_openapi_specs
-from sustainerds.api.core.resource import BaseResource
+from sustainerds.api.core.resource import BaseResource, ResourceContext
 
 
 @dataclass
@@ -20,7 +20,11 @@ class SustainerdsRoute:
 
 
 def add_routes(
-    app: falcon.API, openapi_spec: APISpec, mod: ModuleType, fname: Optional[str] = None
+    app: falcon.API,
+    openapi_spec: APISpec,
+    ctx: ResourceContext,
+    mod: ModuleType,
+    fname: Optional[str] = None,
 ):
     """
     Looks up the `include_routes` callable within the
@@ -31,11 +35,7 @@ def add_routes(
     fn = getattr(mod, fname if fname else "include_routes")
     if fn:
         for r in fn(app):
-            if not isinstance(r, SustainerdsRoute):
-                raise ValueError(
-                    f"Object {r} required to be of type SustainerdsRoute, but was {type(r)}. Imported from module {mod}"
-                )
-            resource: BaseResource = r.resource(app, r.name)
+            resource: BaseResource = r.resource(ctx, r.name)
             # resource.resource_schema_spec
 
             if not r.kwargs:

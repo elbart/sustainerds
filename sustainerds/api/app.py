@@ -2,7 +2,8 @@ import falcon
 from apispec import APISpec
 from apispec.ext.marshmallow import MarshmallowPlugin
 
-from sustainerds.api.core.resource import SchemaValidatorComponent
+from sustainerds.api.core.persistence import InMemoryPersistence
+from sustainerds.api.core.resource import ResourceContext, SchemaValidatorComponent
 from sustainerds.api.core.route import add_routes
 from sustainerds.api.entities import user
 
@@ -33,8 +34,8 @@ def create_openapi_spec(app: falcon.API) -> APISpec:
     return spec
 
 
-def configure_app(app: falcon.API, spec: APISpec):
-    add_routes(app, spec, user)
+def configure_app(app: falcon.API, spec: APISpec, ctx: ResourceContext):
+    add_routes(app, spec, ctx, user)
 
 
 def get_app() -> falcon.API:
@@ -42,7 +43,8 @@ def get_app() -> falcon.API:
     required things together"""
     app = create_app()
     spec = create_openapi_spec(app)
-    configure_app(app, spec)
+    ctx = ResourceContext(persistence=InMemoryPersistence())
+    configure_app(app, spec, ctx)
     print(spec.to_yaml())
 
     return app

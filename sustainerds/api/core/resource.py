@@ -6,6 +6,28 @@ import ujson
 from marshmallow.exceptions import ValidationError
 from marshmallow.schema import Schema
 
+from sustainerds.api.core.persistence import PersistenceApi
+
+
+HTTP_2xx = [
+    falcon.HTTP_200,
+    falcon.HTTP_201,
+    falcon.HTTP_202,
+    falcon.HTTP_203,
+    falcon.HTTP_204,
+    falcon.HTTP_205,
+    falcon.HTTP_206,
+    falcon.HTTP_207,
+    falcon.HTTP_208,
+]
+
+
+@dataclass
+class ResourceContext:
+    """The context object containing configured persistence, auth, etc."""
+
+    persistence: PersistenceApi
+
 
 @dataclass
 class RequestSchemaSpec:
@@ -92,20 +114,23 @@ class ResourceSchemaSpec:
 class BaseResource:
     """Base resource, which is used in the Sustainerds application"""
 
+    ctx: ResourceContext
+    name: Text
+
     @property
     def resource_schema_spec(self) -> ResourceSchemaSpec:
         """Property function, which describes all Schemas to validate for
            each HTTP verb for requests and Responses"""
         return ResourceSchemaSpec(name=self.name)
 
-    def __init__(self, app: falcon.API, name):
+    def __init__(self, ctx: ResourceContext, name: Text):
         """Constructor for the Sustainerds resource
 
         Arguments:
         app: the falcon application.
         name: the name of the resource, which is used especially in the OpenAPI specification.
         """
-        self.app = app
+        self.ctx = ctx
         self.name = name
 
     def _validate_request_schema(
@@ -125,7 +150,7 @@ class BaseResource:
 
             if spec.json:
                 s = spec.json()
-                s.load(req.media)
+                req.validated = s.load(req.media)
 
             if spec.cookies:
                 s = spec.cookies()
@@ -180,7 +205,8 @@ class SchemaValidatorComponent:
         params: Dict,
     ):
         try:
-            resource._validate_response_schema(req, resp, params)
+            if resp.status in HTTP_2xx:
+                resource._validate_response_schema(req, resp, params)
         except ValidationError as ex:
             raise falcon.errors.HTTPUnprocessableEntity(
                 description=ujson.dumps(ex.messages)
