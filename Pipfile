@@ -22,6 +22,7 @@ falcon-apispec = "*"
 falcon-marshmallow = "*"
 sustainerds-api = {editable = true,path = "."}
 ujson = "*"
+typing-extensions = "*"
 
 [requires]
 python_version = "3.7"
