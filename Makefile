@@ -18,7 +18,8 @@ mypy:
 
 .PHONY: test
 test: mypy
-	pipenv run pytest
+	pipenv run pytest \
+		--disable-pytest-warnings
 
 .PHONY: fmt
 fmt: mypy test
