@@ -14,6 +14,11 @@ setuptools.setup(
     long_description_content_type="text/markdown",
     url="https://github.com/elbart/sustainerds",
     packages=setuptools.find_packages(),
+    entry_points={
+        "console_scripts": [
+            'openapi_spec = sustainerds.api.cli:print_spec'
+        ]
+    },
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",

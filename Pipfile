@@ -15,6 +15,7 @@ black = "*"
 importanize = "*"
 autoflake = "*"
 ipython = "*"
+openapi-spec-validator = "*"
 
 [packages]
 falcon = "*"

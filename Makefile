@@ -16,6 +16,11 @@ mypy:
 		--ignore-missing-imports \
 		--show-traceback
 
+.PHONY: validate_openapi_spec
+validate_openapi_spec:
+	pipenv run openapi_spec > sustainerds_openapi.yml
+	pipenv run openapi-spec-validator sustainerds_openapi.yml
+
 .PHONY: test
 test: mypy
 	pipenv run pytest \
