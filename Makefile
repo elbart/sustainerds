@@ -1,5 +1,6 @@
 .PHONY: build
 build:
+	LDFLAGS='-L/usr/local/lib -L/usr/local/opt/openssl/lib -L/usr/local/opt/readline/lib' \
 	pipenv install --dev
 
 .PHONY: develop

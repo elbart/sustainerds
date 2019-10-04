@@ -1,0 +1,27 @@
+version: '3.1'
+
+services:
+
+  db:
+    image: postgres
+    restart: always
+    command: >
+      postgres
+        -c log_destination=stderr
+        -c logging_collector=off
+        -c log_min_duration_statement=0
+        -c max_wal_size=2GB
+        -c debug_pretty_print=on
+        -c log_checkpoints=on
+        -c shared_buffers=1000MB
+        -c effective_cache_size=2155MB
+        -c checkpoint_completion_target=0.8
+        -c work_mem=8MB
+    environment:
+      POSTGRES_USER: s12
+      POSTGRES_PASSWORD: s12dev
+      POSTGRES_DB: sustainerds
+    ports:
+      - 5432:5432
+    expose:
+      - 5432
