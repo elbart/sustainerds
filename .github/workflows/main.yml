@@ -13,7 +13,10 @@ jobs:
       with:
         python-version: '3.7'
         architecture: 'x64'
-    - name: Install jekyll
+    - name: Build app
       run: | 
+        apt install libpq-dev python3-dev
         pip install pipenv
         make build
+    - name: Run tests
+      run: make test
