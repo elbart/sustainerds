@@ -15,7 +15,7 @@ jobs:
         architecture: 'x64'
     - name: Build app
       run: | 
-        apt install libpq-dev python3-dev
+        sudo apt install libpq-dev python3-dev
         pip install pipenv
         make build
     - name: Run tests
