@@ -16,6 +16,7 @@ importanize = "*"
 autoflake = "*"
 ipython = "*"
 openapi-spec-validator = "*"
+alembic = "*"
 
 [packages]
 falcon = "*"
@@ -26,6 +27,7 @@ ujson = "*"
 typing-extensions = "*"
 psycopg2 = "*"
 sqlalchemy = "*"
+pytz = "*"
 
 [requires]
 python_version = "3.7"

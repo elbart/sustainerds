@@ -1,9 +1,16 @@
 from falcon.testing import Result, TestClient
 
+from sustainerds.api.entities.user.model import UserDbModel
+
 
 ###############################################################################
 # model tests
 ###############################################################################
+def test_something():
+    d = UserDbModel()
+    d.email = "tim@elbart.com"
+    d.password = "secret123"
+
 
 ###############################################################################
 # endpoint tests

@@ -1,10 +1,12 @@
+export TZ=UTC
+
 .PHONY: build
 build:
 	LDFLAGS='-L/usr/local/lib -L/usr/local/opt/openssl/lib -L/usr/local/opt/readline/lib' \
 	pipenv install --dev
 
 .PHONY: develop
-develop:
+develop: env.start
 	pipenv run watchmedo auto-restart \
 		--patterns="*.py" \
 		--recursive \
@@ -23,12 +25,12 @@ validate_openapi_spec:
 	pipenv run openapi-spec-validator sustainerds_openapi.yml
 
 .PHONY: test
-test: mypy
+test: mypy env.start
 	pipenv run pytest \
 		--disable-pytest-warnings
 
 .PHONY: fmt
-fmt: mypy test
+fmt: test
 	# remove unused imports
 	pipenv run autoflake \
 		--remove-all-unused-imports \
@@ -42,3 +44,11 @@ fmt: mypy test
 	pipenv run black \
 		--target-version py37 \
 		sustainerds/
+
+.PHONY: env.start
+env.start:
+	docker-compose up -d
+
+.PHONY: env.teardown
+env.teardown:
+	docker-compose stop

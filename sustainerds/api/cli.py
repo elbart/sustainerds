@@ -1,4 +1,4 @@
-from sustainerds.api.app import create_app, create_openapi_spec, configure_app
+from sustainerds.api.app import configure_app, create_app, create_openapi_spec
 from sustainerds.api.core.persistence import InMemoryPersistence
 from sustainerds.api.core.resource import ResourceContext
 

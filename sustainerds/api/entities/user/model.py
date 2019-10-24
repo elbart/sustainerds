@@ -1,7 +1,18 @@
 import uuid
 from typing import Dict, Optional, Text
 
+from sqlalchemy import Column, String
+
 from sustainerds.api.core.persistence import PersistenceApi, PersistenceError
+from sustainerds.api.persistence import Base
+
+
+class UserDbModel(Base):
+
+    __tablename__ = "user"
+
+    email = Column(String(500))
+    password = Column(String(500))
 
 
 class User:
