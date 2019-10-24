@@ -19,4 +19,6 @@ jobs:
         pip install pipenv
         make build
     - name: Run tests
-      run: make test
+      run: |
+        make test
+        make validate_openapi_spec
