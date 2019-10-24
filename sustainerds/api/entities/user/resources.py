@@ -60,6 +60,10 @@ class UserCollectionResource(BaseResource):
         resp.media = u.to_dict()
 
 
+class UserResourcePathSchema(Schema):
+    user_id = fields.UUID(required=True)
+
+
 class UserResource(BaseResource):
     """User resource"""
 
@@ -67,6 +71,7 @@ class UserResource(BaseResource):
     def resource_schema_spec(self) -> ResourceSchemaSpec:
         return ResourceSchemaSpec(
             name="User",
+            path=UserResourcePathSchema(),
             GET=SchemaSpec(
                 request=UserGetRequestSchema(), response=UserGetResponseSchema()
             ),

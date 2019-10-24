@@ -84,6 +84,7 @@ class ResourceSchemaSpec:
     """Defines all schema specifications for all HTTP methods"""
 
     name: Text
+    path: Optional[Schema] = None
     GET: Optional[SchemaSpec] = None
     HEAD: Optional[SchemaSpec] = None
     POST: Optional[SchemaSpec] = None

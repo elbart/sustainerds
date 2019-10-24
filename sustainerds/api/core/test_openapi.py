@@ -25,12 +25,17 @@ class TestResourcePostRequestSchema(RequestSchemaSpec):
         password = fields.String(required=True)
 
 
+class PathSchema(Schema):
+    user_id = fields.UUID(required=True)
+
+
 class TestResource(BaseResource):
     @property
     def resource_schema_spec(self) -> ResourceSchemaSpec:
 
         return ResourceSchemaSpec(
             name="TestResource",
+            path=PathSchema(),
             GET=SchemaSpec(
                 request=RequestSchemaSpec(), response=TestResourceGetResponseSchema()
             ),
@@ -42,16 +47,34 @@ class TestResource(BaseResource):
 
 def test_openapi_paths(plain_test_app: falcon.API, plain_openapi_spec: APISpec):
     add_openapi_specs(
-        plain_openapi_spec, "/test", TestResource(plain_test_app, "TestResource")
+        plain_openapi_spec,
+        "/test/{user_id}",
+        TestResource(plain_test_app, "TestResource"),
     )
 
     assert len(plain_openapi_spec.components._schemas) == 2
     assert "TestResourceGetResponseSchema" in plain_openapi_spec.components._schemas
     assert "TestResourcePostRequestSchema" in plain_openapi_spec.components._schemas
-    assert "/test" in plain_openapi_spec._paths
-    assert "responses" in plain_openapi_spec._paths["/test"]["get"]
+    assert "/test/{user_id}" in plain_openapi_spec._paths
+    assert "responses" in plain_openapi_spec._paths["/test/{user_id}"]["get"]
+    assert "parameters" in plain_openapi_spec._paths["/test/{user_id}"]
+    assert len(plain_openapi_spec._paths["/test/{user_id}"]["parameters"]) == 1
 
-    plain_openapi_spec._paths["/test"]["get"]["responses"]["200"] == {
+    assert (
+        plain_openapi_spec._paths["/test/{user_id}"]["parameters"][0]["name"]
+        == "user_id"
+    )
+    assert plain_openapi_spec._paths["/test/{user_id}"]["parameters"][0]["in"] == "path"
+    assert (
+        plain_openapi_spec._paths["/test/{user_id}"]["parameters"][0]["required"]
+        == True
+    )
+    assert (
+        plain_openapi_spec._paths["/test/{user_id}"]["parameters"][0]["schema"]["type"]
+        == "string"
+    )
+
+    assert plain_openapi_spec._paths["/test/{user_id}"]["get"]["responses"]["200"] == {
         "content": {
             "application/json": {
                 "schema": {"$ref": "#/components/schemas/TestResourceGetResponseSchema"}
@@ -59,8 +82,8 @@ def test_openapi_paths(plain_test_app: falcon.API, plain_openapi_spec: APISpec):
         },
         "description": "",
     }
-    assert "requestBody" in plain_openapi_spec._paths["/test"]["post"]
+    assert "requestBody" in plain_openapi_spec._paths["/test/{user_id}"]["post"]
     assert (
-        plain_openapi_spec._paths["/test"]["post"]["requestBody"]
+        plain_openapi_spec._paths["/test/{user_id}"]["post"]["requestBody"]
         == "#/components/schemas/TestResourcePostRequestSchema"
     )

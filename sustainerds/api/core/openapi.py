@@ -11,6 +11,20 @@ def add_openapi_specs(o: APISpec, path: str, resource: BaseResource):
     operations: Dict = dict()
 
     methods = resource.resource_schema_spec.get_methods()
+    parameters = []
+
+    if resource.resource_schema_spec.path:
+        path_spec = resource.resource_schema_spec.path
+
+        for fname, f in path_spec.fields.items():
+            parameters.append(
+                {
+                    "name": fname,
+                    "in": "path",
+                    "required": True,
+                    "schema": {"type": "string"},
+                }
+            )
 
     for method, spec in methods:
 
@@ -51,4 +65,4 @@ def add_openapi_specs(o: APISpec, path: str, resource: BaseResource):
                 }
             }
 
-    o.path(path=path, operations=operations)
+    o.path(path=path, operations=operations, parameters=parameters)
