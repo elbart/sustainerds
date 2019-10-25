@@ -55,4 +55,6 @@ env.teardown:
 
 .PHONY: migrate
 migrate: env.start
+	pipenv run alembic history
+	pipenv run alembic current
 	pipenv run alembic upgrade head
