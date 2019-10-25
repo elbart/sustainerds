@@ -20,5 +20,6 @@ jobs:
         make build
     - name: Run tests
       run: |
+        make migrate
         make test
         make validate_openapi_spec

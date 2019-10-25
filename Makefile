@@ -52,3 +52,7 @@ env.start:
 .PHONY: env.teardown
 env.teardown:
 	docker-compose stop
+
+.PHONY: migrate
+migrate:
+	pipenv run alembic upgrade head
