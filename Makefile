@@ -1,5 +1,7 @@
 export TZ=UTC
 
+.DEFAULT_GOAL := build
+
 .PHONY: build
 build:
 	LDFLAGS='-L/usr/local/lib -L/usr/local/opt/openssl/lib -L/usr/local/opt/readline/lib' \
@@ -42,7 +44,7 @@ fmt: test
 	
 	# reformat code
 	pipenv run black \
-		--target-version py37 \
+		--target-version py38 \
 		sustainerds/
 
 .PHONY: env.start
@@ -58,3 +60,7 @@ migrate: env.start
 	pipenv run alembic history
 	pipenv run alembic current
 	pipenv run alembic upgrade head
+
+.PHONY: clean
+clean:
+	pipenv --rm
